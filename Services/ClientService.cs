@@ -1,5 +1,6 @@
 using BankApi.Data;
 using BankApi.Data.BankModels;
+using BankApi.Data.DTOs;
 using Microsoft.EntityFrameworkCore;
 
 namespace BankApi.Services;
@@ -21,15 +22,23 @@ public class ClientService
         return await _context.Clients.FindAsync(id);
     }
 
-    public async Task<Client> Create(Client newClient){
+    public async Task<Client> Create(ClientDTO newClientDTO){
+
+        var newClient = new Client();
+
+        newClient.Id = newClientDTO.Id;
+        newClient.Name = newClientDTO.Name;
+        newClient.PhoneNumber = newClientDTO.PhoneNumber;
+        newClient.Email = newClientDTO.Email;
+        
         _context.Clients.Add(newClient);
         await _context.SaveChangesAsync();
 
         return newClient;
     }
 
-    public async Task Update(int id, Client client){
-        var existingCliente = await GetById(id);
+    public async Task Update(ClientDTO client){
+        var existingCliente = await GetById(client.Id);
         if(existingCliente is not null){
             existingCliente.Name = client.Name;
             existingCliente.PhoneNumber = client.PhoneNumber;
